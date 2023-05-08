@@ -3,29 +3,26 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
 import folium
-
 from streamlit_folium import folium_static
-'''
-Name: Ethan Ortega
-CS230: Section 1
-Data: Mass Shooting Data Sets
-URL:
-Description: Through the use of pandas, streamlit, matplotlib.pyplot, seaborn, and folium this project takes a data 
-            analytics approach toward the investigation of mass shootings in the United States. Throughout this project
-            there are functions, dictionaries, and pivot tables that all help to create the visualizations. These 
-            visualizations include interactive charts and maps through the integration of streamlit. This streamlit 
-            integration allows the user to determine the dependent variables of the charts allowing for personalized
-            analysis.
-'''
-#Programmed by Ethan Ortega
+expand_e = st.expander('Documentation')
+expand_e.write('Name: Ethan Ortega CS230: Section 1'
+                    'Data: Mass Shooting Data Sets'
+                    'URL:https://ethan-alejo-ortega-streamlit-streamlit-finalproject-ggs13m.streamlit.app/'
+                    'Description:Through the use of pandas, streamlit, matplotlib.pyplot, seaborn, and folium this project takes a data' 
+                    'analytics approach toward the investigation of mass shootings in the United States. Throughout this project'
+                    'there are functions, dictionaries, and pivot tables that all help to create the visualizations. These '
+                    'visualizations include interactive charts and maps through the integration of streamlit. This streamlit' 
+                    'integration allows the user to determine the dependent variables of the charts allowing for personalized '
+                    'analysis')
+
 
 st.title('Investigation of United States Mass Shootings')
 expander= st.expander('Project Description')
-expander.write('This project investigates the unfornate advent of Mass Shootings through the use of two datasets.'
+expander.write('This project investigates the unfortunate advent of Mass Shootings through the use of two datasets.'
                ' The primary areas this project investigates is the state in which it occurred, the year it occurred, '
                'the number of victims, and the gender of the perpetrator. This page includes many interactive elements'
                ' allowing the user to determine the dependent variables for the charts, creating an abundance of '
-               'potenital comparisons.')
+               'potential comparisons.')
 df = pd.read_excel("data_csv.xlsx")
 def get_state_data(df):
     def extract_state(location):
@@ -60,8 +57,10 @@ plt.ylabel('Count', fontweight='bold',fontsize=16)
 st.header('Mass Shootings by State')
 '''The data used to create the following graphs has been gathered from 1982 to 2017.'''
 state_options = list(state_df.index)
-selected_states = st.multiselect('Select States', state_options, default=state_options)
-filtered_state_df = state_df.loc[selected_states]
+selected_e = st.expander('Select States')
+with selected_e:
+    selected_states = st.multiselect('Select States', state_options, default=state_options)
+    filtered_state_df = state_df.loc[selected_states]
 '''Using the boxes above decide which states to display allowing for any comparison the user decides.'''
 fig, ax = plt.subplots(figsize=(12,6))
 ax.set_facecolor('lightgray')
@@ -72,7 +71,7 @@ plt.ylabel('Count', fontweight='bold',fontsize=16)
 for i, count in enumerate(filtered_state_df['Count of Mass Shootings']):
     if filtered_state_df.index[i] in selected_states:
         ax.text(i, count, str(count), ha='center', fontsize=10)
-#Streamlit
+
 st.pyplot(fig)
 
 
@@ -106,12 +105,7 @@ ax.set_title('Number of Mass Shootings by Year', fontweight='bold', fontsize=22)
 #streamlit
 st.pyplot(fig)
 
-
-
-
-
-'''Code for double slider was created based on code from ChatGPT. See Section 1 of accompanying document.'''
-# extract month from date column and count number of events per month
+st.caption('Code for double slider was created based on code from ChatGPT. See Section 1 of accompanying document.')
 # Read the data from the Excel file
 
 df = pd.read_excel("data_csv.xlsx")
@@ -126,7 +120,7 @@ month_df = pd.DataFrame(month_counts)
 # rename columns
 month_df = month_df.rename(columns={'Event': 'Count of Mass Shootings'})
 
-# sort by month order
+# Sorting
 month_df = month_df.reindex(['January', 'February', 'March', 'April', 'May', 'June',
                              'July', 'August', 'September', 'October', 'November', 'December'])
 default_months = month_df.index.tolist()
@@ -183,7 +177,7 @@ folium_static(m)
 
 # Pivot Table
 st.header('Pivot Tables')
-'''Pivot Table that illustrates the Gender, State, and Year of Mass Shootings up to 2015.'''
+st.caption('Pivot Table that illustrates the Gender, State, and Year of Mass Shootings up to 2015.')
 df = pd.read_excel("USMassShootings.xlsx")
 pivot_table = df.pivot_table(values='TOTALVICTIMS', index=['GENDER', 'STATE', 'YEAR'], aggfunc='sum')
 pivot_table = df.loc[df['SHOOTINGTYPE'].isin(['Mass', 'Spree']) & df['LOCATIONTYPE'].isin(['School', 'Workplace','Military','Religious','Other'])].pivot_table(values='TOTALVICTIMS', index=['GENDER', 'STATE', 'YEAR'], aggfunc='sum')
@@ -192,7 +186,7 @@ pivot_table = pivot_table.rename(columns={'TOTALVICTIMS': 'Victims'})
 st.write(pivot_table)
 #Pivot Table: Filter using and/or
 
-'''Pivot Table that only considers Mass Shootings by Males with the location being at a School.'''
+st.caption('Pivot Table that only considers Mass Shootings by Males with the location being at a School.')
 df_male_school = df.loc[(df['GENDER'] == 'Male') & (df['LOCATIONTYPE'] == 'School')].pivot_table(values='TOTALVICTIMS', index=['STATE', 'YEAR'], aggfunc='sum')
 df_male_school = df_male_school.rename(columns={'TOTALVICTIMS': 'Victims'})
 
@@ -211,7 +205,7 @@ ax.set_title('Gender Distribution', color='white')
 colors = ['red', 'white']
 
 # Create the pie chart
-ax.pie(gender_counts, labels=gender_counts.index, autopct='%1.1f%%', colors=colors, textprops={'color':'white'})
+ax.pie(gender_counts, labels=gender_counts.index, autopct='%1.1f%%', colors=colors, textprops={'color': 'white'})
 # Set legend font color
 legend = ax.legend(title="Gender", loc="upper right", fontsize=12)
 plt.setp(legend.get_texts(), color='black')
